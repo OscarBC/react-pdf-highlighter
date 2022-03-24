@@ -23,6 +23,7 @@ interface State {
   url: string;
   highlights: Array<IHighlight>;
   scale: string;
+  showSideBar: boolean;
 }
 
 const getNextId = () => String(Math.random()).slice(2);
@@ -61,6 +62,7 @@ class App extends Component<{}, State> {
       ? [...testHighlights[initialUrl]]
       : [],
     scale: "Scale 100%",
+    showSideBar: true,
   };
 
   resetHighlights = () => {
@@ -174,10 +176,13 @@ class App extends Component<{}, State> {
     }
   }
 
-  toggleSideBar() {}
+  toggleSideBar() {
+    const shown = this.state.showSideBar;
+    this.setState({ showSideBar: !shown });
+  }
 
   render() {
-    const { url, highlights, scale } = this.state;
+    const { url, highlights, showSideBar, scale } = this.state;
 
     return (
       <div
@@ -185,6 +190,7 @@ class App extends Component<{}, State> {
         style={{ display: "flex", height: "100vh", position: "relative" }}
       >
         <Sidebar
+          showSideBar={showSideBar}
           highlights={highlights}
           resetHighlights={this.resetHighlights}
           toggleDocument={this.toggleDocument}
@@ -192,7 +198,7 @@ class App extends Component<{}, State> {
         <div
           style={{
             height: "100vh",
-            width: "75vw",
+            width: showSideBar ? "66vw" : "100vw",
             position: "relative",
           }}
         >
