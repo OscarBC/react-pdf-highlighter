@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import type { LTWHP } from "../types";
+import type { PageBoundingRect } from "../types";
 
 interface State {
   height: number;
@@ -11,7 +11,7 @@ interface Props {
   children: JSX.Element | null;
   style: { top: number; left: number; bottom: number };
   scrollTop: number;
-  pageBoundingRect: LTWHP;
+  pageBoundingRect: PageBoundingRect;
 }
 
 const clamp = (value: number, left: number, right: number) =>
@@ -59,9 +59,15 @@ class TipContainer extends Component<Props, State> {
 
     const top = shouldMove ? style.bottom + 5 : style.top - height - 5;
 
-    const minLeft = Math.abs(pageBoundingRect.left);
-    const maxRight = window.innerWidth + minLeft - width;
-    const left = clamp(style.left - width / 2, minLeft, maxRight);
+    console.log("pgbr", pageBoundingRect, pageBoundingRect);
+
+    // console.log("pgbr left widht", pageBoundingRect.left, pageBoundingRect.width);
+    // console.log("style.left", style.left);
+
+
+    const maxLeft = Math.abs(pageBoundingRect.left);
+    const maxRight = window.innerWidth + maxLeft - width;
+    const left = clamp(style.left - width / 2, maxLeft, maxRight);
 
     const childrenWithProps = React.Children.map(children, (child) =>
       // @ts-ignore

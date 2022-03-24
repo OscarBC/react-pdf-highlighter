@@ -5,6 +5,7 @@ interface Props {
   highlights: Array<IHighlight>;
   resetHighlights: () => void;
   toggleDocument: () => void;
+  showSideBar: boolean;
 }
 
 const updateHash = (highlight: IHighlight) => {
@@ -15,9 +16,10 @@ export function Sidebar({
   highlights,
   toggleDocument,
   resetHighlights,
+  showSideBar,
 }: Props) {
   return (
-    <div className="sidebar" style={{ width: "25vw" }}>
+    <div className="sidebar" style={{ width: showSideBar ? "25vw" : "0", height: "100vh", position: "absolute", zIndex: 10 }}>
       <div className="description" style={{ padding: "1rem" }}>
         <h2 style={{ marginBottom: "1rem" }}>react-pdf-highlighter</h2>
 

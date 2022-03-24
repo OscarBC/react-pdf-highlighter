@@ -278,6 +278,60 @@ export const testHighlights = {
         pageNumber: 3,
       },
     },
+    {
+      content: { text: "describe" },
+      position: {
+        boundingRect: {
+          x1: 61.09375,
+          y1: 363.21875,
+          x2: 103.10415649414062,
+          y2: 377.21875,
+          width: 648,
+          height: 960,
+          pageNumber: 1,
+        },
+        rects: [
+          {
+            x1: 61.09375,
+            y1: 363.21875,
+            x2: 103.10415649414062,
+            y2: 377.21875,
+            width: 648,
+            height: 960,
+            pageNumber: 1,
+          },
+        ],
+        pageNumber: 1,
+      },
+      comment: { text: "left", emoji: "😱" },
+    },
+    {
+      content: { text: "nt. We" },
+      position: {
+        boundingRect: {
+          x1: 555.6461181640625,
+          y1: 348.6091003417969,
+          x2: 586.8909301757812,
+          y2: 362.6091003417969,
+          width: 648,
+          height: 960,
+          pageNumber: 1,
+        },
+        rects: [
+          {
+            x1: 555.6461181640625,
+            y1: 348.6091003417969,
+            x2: 586.8909301757812,
+            y2: 362.6091003417969,
+            width: 648,
+            height: 960,
+            pageNumber: 1,
+          },
+        ],
+        pageNumber: 1,
+      },
+      comment: { text: "right", emoji: "🔥" },
+    },
   ],
   "https://arxiv.org/pdf/1604.02480.pdf": [
     {

@@ -23,6 +23,7 @@ interface State {
   url: string;
   highlights: Array<IHighlight>;
   scale: string;
+  showSideBar: boolean;
 }
 
 const getNextId = () => String(Math.random()).slice(2);
@@ -61,7 +62,8 @@ class App extends Component<{}, State> {
     highlights: testHighlights[initialUrl]
       ? [...testHighlights[initialUrl]]
       : [],
-    scale: "1.0"
+    scale: "Scale 100%",
+    showSideBar: false,
   };
 
   resetHighlights = () => {
@@ -107,7 +109,7 @@ class App extends Component<{}, State> {
   addHighlight(highlight: NewHighlight) {
     const { highlights } = this.state;
 
-    console.log("Saving highlight", highlight);
+    console.log("Saving highlight", JSON.stringify(highlight));
 
     this.setState({
       highlights: [{ ...highlight, id: getNextId() }, ...highlights],
@@ -159,19 +161,25 @@ class App extends Component<{}, State> {
   setCurrentScaleToViewer(scale: number) {
     if (this.pdfHighlighterRef.current && this.pdfHighlighterRef.current.viewer) {
       const current = this.pdfHighlighterRef.current;
-      const str = scale.toFixed(2);
-      current.viewer.currentScaleValue = str;
+      const percent = (scale * 100).toFixed(0);
+      current.viewer.currentScaleValue = scale.toFixed(2);
       current.renderHighlights();
-      this.setState({ scale: `Scale ${str}` });
+      this.setState({ scale: `Scale ${percent}%` });
     }
   }
 
+  toggleSideBar() {
+    const show = this.state.showSideBar;
+    this.setState({ showSideBar: !show });
+  }
+
   render() {
-    const { url, highlights, scale } = this.state;
+    const { url, highlights, showSideBar, scale } = this.state;
 
     return (
-      <div className="App" style={{ display: "flex", height: "100vh" }}>
+      <div className="App" style={{ display: "flex", height: "100vh", position: "relative" }}>
         <Sidebar
+          showSideBar={showSideBar}
           highlights={highlights}
           resetHighlights={this.resetHighlights}
           toggleDocument={this.toggleDocument}
@@ -179,14 +187,15 @@ class App extends Component<{}, State> {
         <div
           style={{
             height: "100vh",
-            width: "75vw",
+            width: "100vw",
             position: "relative",
           }}
         >
-          <div className="zoomControls">
+          <div className="zoomControls" style={{ position: "absolute", top: 0, left: 0, zIndex: 20 }}>
+            <button onClick={() => this.toggleSideBar()}>Sidebar</button>
             <button onClick={() => this.handleZoomOut()}>-- Zoom</button>
             <button onClick={() => this.handleZoomIn()}>++ Zoom</button>
-            <span style={{ color: "black" }}>{scale}</span>
+            <span style={{ color: "black", marginLeft: 5 }}>{scale}</span>
           </div>
           <PdfLoader url={url} beforeLoad={<Spinner />}>
             {(pdfDocument) => (
@@ -195,8 +204,7 @@ class App extends Component<{}, State> {
                 pdfDocument={pdfDocument}
                 enableAreaSelection={(event) => event.altKey}
                 onScrollChange={resetHash}
-                // pdfScaleValue="page-width"
-                pdfScaleValue="1"
+                pdfScaleValue="1.0"
                 scrollRef={(scrollTo) => {
                   this.scrollViewerTo = scrollTo;
                   this.scrollToHighlightFromHash();
