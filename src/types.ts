@@ -1,16 +1,3 @@
-// const pageBoundingRect = {
-//   left: pageBoundingClientRect.left,
-//   top: pageBoundingClientRect.top,
-//   width: pageBoundingClientRect.width,
-//   height: pageBoundingClientRect.height,
-//   pageNumber: page.pageNumber,
-
-//   bottom: pageBoundingClientRect.bottom,
-//   right: pageBoundingClientRect.right,
-//   x: pageBoundingClientRect.x,
-//   y: pageBoundingClientRect.y,
-// };
-
 export interface PageBoundingRect extends LTWHP {
   bottom: number;
   right: number;

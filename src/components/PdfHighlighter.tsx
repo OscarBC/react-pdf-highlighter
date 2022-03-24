@@ -205,7 +205,10 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
     }
     if (textLayer.textLayerDiv.parentElement) {
       let data = {
-        layer: findOrCreateContainerLayer(textLayer.textLayerDiv.parentElement, "PdfHighlighter__highlight-layer"),
+        layer: findOrCreateContainerLayer(
+          textLayer.textLayerDiv.parentElement,
+          "PdfHighlighter__highlight-layer"
+        ),
         textLayer: textLayer,
       };
       return data;
@@ -403,14 +406,25 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
 
     const pageBoundingClientRect = page.node.getBoundingClientRect();
 
+    let realX = 0;
+    let realWidth = 0;
+
+    const doc = this.containerNode;
+    if (doc) {
+      const docRects = doc.getClientRects();
+      const docRect = docRects[0];
+      realX = docRect.x;
+      realWidth = doc.clientWidth;
+    }
+
     const pageBoundingRect = {
       bottom: pageBoundingClientRect.bottom,
       height: pageBoundingClientRect.height,
       left: pageBoundingClientRect.left,
       right: pageBoundingClientRect.right,
       top: pageBoundingClientRect.top,
-      width: pageBoundingClientRect.width,
-      x: pageBoundingClientRect.x,
+      width: realWidth,
+      x: realX,
       y: pageBoundingClientRect.y,
       pageNumber: page.pageNumber,
     };
@@ -444,8 +458,12 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
 
     const scrollMargin = 10;
 
-    const left = scaledToViewport(boundingRect, pageViewport, usePdfCoordinates).left - scrollMargin;
-    const top = scaledToViewport(boundingRect, pageViewport, usePdfCoordinates).top - scrollMargin;
+    const left =
+      scaledToViewport(boundingRect, pageViewport, usePdfCoordinates).left -
+      scrollMargin;
+    const top =
+      scaledToViewport(boundingRect, pageViewport, usePdfCoordinates).top -
+      scrollMargin;
 
     this.viewer.scrollPageIntoView({
       pageNumber,
@@ -504,7 +522,7 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
     const doc = this.containerNode?.ownerDocument;
     if (doc) {
       const queryElements = doc.querySelectorAll<HTMLDivElement>(".Highlight");
-      queryElements.forEach(element => {
+      queryElements.forEach((element) => {
         element.style.pointerEvents = "none";
       });
     }
@@ -603,7 +621,7 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
     const doc = this.containerNode?.ownerDocument;
     if (doc) {
       const queryElements = doc.querySelectorAll<HTMLDivElement>(".Highlight");
-      queryElements.forEach(element => {
+      queryElements.forEach((element) => {
         element.style.pointerEvents = "all";
       });
     }

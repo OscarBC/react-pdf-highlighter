@@ -279,6 +279,7 @@ export const testHighlights = {
       },
     },
     {
+      id: "46570518065661655",
       content: { text: "describe" },
       position: {
         boundingRect: {
@@ -306,6 +307,7 @@ export const testHighlights = {
       comment: { text: "left", emoji: "😱" },
     },
     {
+      id: "46570518065661656",
       content: { text: "nt. We" },
       position: {
         boundingRect: {

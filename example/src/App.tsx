@@ -23,7 +23,6 @@ interface State {
   url: string;
   highlights: Array<IHighlight>;
   scale: string;
-  showSideBar: boolean;
 }
 
 const getNextId = () => String(Math.random()).slice(2);
@@ -54,7 +53,6 @@ const searchParams = new URLSearchParams(document.location.search);
 const initialUrl = searchParams.get("url") || PRIMARY_PDF_URL;
 
 class App extends Component<{}, State> {
-
   private pdfHighlighterRef = React.createRef<PdfHighlighter<IHighlight>>();
 
   state = {
@@ -63,7 +61,6 @@ class App extends Component<{}, State> {
       ? [...testHighlights[initialUrl]]
       : [],
     scale: "Scale 100%",
-    showSideBar: false,
   };
 
   resetHighlights = () => {
@@ -82,7 +79,7 @@ class App extends Component<{}, State> {
     });
   };
 
-  scrollViewerTo = (highlight: any) => { };
+  scrollViewerTo = (highlight: any) => {};
 
   scrollToHighlightFromHash = () => {
     const highlight = this.getHighlightById(parseIdFromHash());
@@ -129,11 +126,11 @@ class App extends Component<{}, State> {
         } = h;
         return id === highlightId
           ? {
-            id,
-            position: { ...originalPosition, ...position },
-            content: { ...originalContent, ...content },
-            ...rest,
-          }
+              id,
+              position: { ...originalPosition, ...position },
+              content: { ...originalContent, ...content },
+              ...rest,
+            }
           : h;
       }),
     });
@@ -143,23 +140,32 @@ class App extends Component<{}, State> {
   static MAX_SCALE = 2;
 
   handleZoomOut() {
-    if (this.pdfHighlighterRef.current && this.pdfHighlighterRef.current.viewer) {
+    if (
+      this.pdfHighlighterRef.current &&
+      this.pdfHighlighterRef.current.viewer
+    ) {
       let newScale = this.pdfHighlighterRef.current.viewer.currentScale;
-      newScale = newScale - 0.10;
+      newScale = newScale - 0.1;
       this.setCurrentScaleToViewer(Math.max(App.MIN_SCALE, newScale));
     }
   }
 
   handleZoomIn() {
-    if (this.pdfHighlighterRef.current && this.pdfHighlighterRef.current.viewer) {
+    if (
+      this.pdfHighlighterRef.current &&
+      this.pdfHighlighterRef.current.viewer
+    ) {
       let newScale = this.pdfHighlighterRef.current.viewer.currentScale;
-      newScale = newScale + 0.10;
+      newScale = newScale + 0.1;
       this.setCurrentScaleToViewer(Math.min(App.MAX_SCALE, newScale));
     }
   }
 
   setCurrentScaleToViewer(scale: number) {
-    if (this.pdfHighlighterRef.current && this.pdfHighlighterRef.current.viewer) {
+    if (
+      this.pdfHighlighterRef.current &&
+      this.pdfHighlighterRef.current.viewer
+    ) {
       const current = this.pdfHighlighterRef.current;
       const percent = (scale * 100).toFixed(0);
       current.viewer.currentScaleValue = scale.toFixed(2);
@@ -168,18 +174,17 @@ class App extends Component<{}, State> {
     }
   }
 
-  toggleSideBar() {
-    const show = this.state.showSideBar;
-    this.setState({ showSideBar: !show });
-  }
+  toggleSideBar() {}
 
   render() {
-    const { url, highlights, showSideBar, scale } = this.state;
+    const { url, highlights, scale } = this.state;
 
     return (
-      <div className="App" style={{ display: "flex", height: "100vh", position: "relative" }}>
+      <div
+        className="App"
+        style={{ display: "flex", height: "100vh", position: "relative" }}
+      >
         <Sidebar
-          showSideBar={showSideBar}
           highlights={highlights}
           resetHighlights={this.resetHighlights}
           toggleDocument={this.toggleDocument}
@@ -187,11 +192,11 @@ class App extends Component<{}, State> {
         <div
           style={{
             height: "100vh",
-            width: "100vw",
+            width: "75vw",
             position: "relative",
           }}
         >
-          <div className="zoomControls" style={{ position: "absolute", top: 0, left: 0, zIndex: 20 }}>
+          <div className="zoomControls" style={{}}>
             <button onClick={() => this.toggleSideBar()}>Sidebar</button>
             <button onClick={() => this.handleZoomOut()}>-- Zoom</button>
             <button onClick={() => this.handleZoomIn()}>++ Zoom</button>
