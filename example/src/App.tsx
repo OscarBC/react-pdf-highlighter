@@ -22,6 +22,7 @@ const testHighlights: Record<string, Array<IHighlight>> = _testHighlights;
 interface State {
   url: string;
   highlights: Array<IHighlight>;
+  scale: string;
 }
 
 const getNextId = () => String(Math.random()).slice(2);
@@ -52,11 +53,15 @@ const searchParams = new URLSearchParams(document.location.search);
 const initialUrl = searchParams.get("url") || PRIMARY_PDF_URL;
 
 class App extends Component<{}, State> {
+
+  private pdfHighlighterRef = React.createRef<PdfHighlighter<IHighlight>>();
+
   state = {
     url: initialUrl,
     highlights: testHighlights[initialUrl]
       ? [...testHighlights[initialUrl]]
       : [],
+    scale: "1.0"
   };
 
   resetHighlights = () => {
@@ -136,39 +141,33 @@ class App extends Component<{}, State> {
   static MAX_SCALE = 2;
 
   handleZoomOut() {
-    if ((window as any).PdfViewer && (window as any).PdfViewer.viewer) {
-      let newScale = (window as any).PdfViewer.viewer.currentScale;
-      newScale = Math.round(newScale * 10) / 10;
-      newScale = (newScale - 0.10).toFixed(2);
-      console.log("this.MIN_SCALE", App.MIN_SCALE)
+    if (this.pdfHighlighterRef.current && this.pdfHighlighterRef.current.viewer) {
+      let newScale = this.pdfHighlighterRef.current.viewer.currentScale;
+      newScale = newScale - 0.10;
       this.setCurrentScaleToViewer(Math.max(App.MIN_SCALE, newScale));
     }
   }
 
   handleZoomIn() {
-    if ((window as any).PdfViewer && (window as any).PdfViewer.viewer) {
-      let newScale = (window as any).PdfViewer.viewer.currentScale;
-      newScale = Math.round(newScale * 10) / 10;
-      newScale = (newScale + 0.10).toFixed(2);
-      console.log("this.MIN_SCALE", App.MAX_SCALE)
+    if (this.pdfHighlighterRef.current && this.pdfHighlighterRef.current.viewer) {
+      let newScale = this.pdfHighlighterRef.current.viewer.currentScale;
+      newScale = newScale + 0.10;
       this.setCurrentScaleToViewer(Math.min(App.MAX_SCALE, newScale));
     }
   }
 
   setCurrentScaleToViewer(scale: number) {
-    if ((window as any).PdfViewer && (window as any).PdfViewer.viewer) {
-      if (scale > App.MAX_SCALE) {
-        scale = App.MAX_SCALE;
-      } else if (scale < App.MIN_SCALE) {
-        scale = App.MIN_SCALE;
-      }
-      (window as any).PdfViewer.viewer.currentScaleValue = scale;
-      (window as any).PdfViewer.renderHighlights();
+    if (this.pdfHighlighterRef.current && this.pdfHighlighterRef.current.viewer) {
+      const current = this.pdfHighlighterRef.current;
+      const str = scale.toFixed(2);
+      current.viewer.currentScaleValue = str;
+      current.renderHighlights();
+      this.setState({ scale: `Scale ${str}` });
     }
   }
 
   render() {
-    const { url, highlights } = this.state;
+    const { url, highlights, scale } = this.state;
 
     return (
       <div className="App" style={{ display: "flex", height: "100vh" }}>
@@ -187,17 +186,19 @@ class App extends Component<{}, State> {
           <div className="zoomControls">
             <button onClick={() => this.handleZoomOut()}>-- Zoom</button>
             <button onClick={() => this.handleZoomIn()}>++ Zoom</button>
+            <span style={{ color: "black" }}>{scale}</span>
           </div>
           <PdfLoader url={url} beforeLoad={<Spinner />}>
             {(pdfDocument) => (
               <PdfHighlighter
+                ref={this.pdfHighlighterRef}
                 pdfDocument={pdfDocument}
                 enableAreaSelection={(event) => event.altKey}
                 onScrollChange={resetHash}
                 // pdfScaleValue="page-width"
+                pdfScaleValue="1"
                 scrollRef={(scrollTo) => {
                   this.scrollViewerTo = scrollTo;
-
                   this.scrollToHighlightFromHash();
                 }}
                 onSelectionFinished={(

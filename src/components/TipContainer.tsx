@@ -59,11 +59,9 @@ class TipContainer extends Component<Props, State> {
 
     const top = shouldMove ? style.bottom + 5 : style.top - height - 5;
 
-    const left = clamp(
-      style.left - width / 2,
-      0,
-      pageBoundingRect.width - width
-    );
+    const minLeft = Math.abs(pageBoundingRect.left);
+    const maxRight = window.innerWidth + minLeft - width;
+    const left = clamp(style.left - width / 2, minLeft, maxRight);
 
     const childrenWithProps = React.Children.map(children, (child) =>
       // @ts-ignore

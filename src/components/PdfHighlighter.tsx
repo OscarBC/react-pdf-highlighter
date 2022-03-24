@@ -444,16 +444,15 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
 
     const scrollMargin = 10;
 
+    const left = scaledToViewport(boundingRect, pageViewport, usePdfCoordinates).left - scrollMargin;
+    const top = scaledToViewport(boundingRect, pageViewport, usePdfCoordinates).top - scrollMargin;
+
     this.viewer.scrollPageIntoView({
       pageNumber,
       destArray: [
         null,
         { name: "XYZ" },
-        ...pageViewport.convertToPdfPoint(
-          0,
-          scaledToViewport(boundingRect, pageViewport, usePdfCoordinates).top -
-            scrollMargin
-        ),
+        ...pageViewport.convertToPdfPoint(left, top),
         0,
       ],
     });
@@ -500,6 +499,14 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
       !container.contains(range.commonAncestorContainer)
     ) {
       return;
+    }
+
+    const doc = this.containerNode?.ownerDocument;
+    if (doc) {
+      const queryElements = doc.querySelectorAll<HTMLDivElement>(".Highlight");
+      queryElements.forEach(element => {
+        element.style.pointerEvents = "none";
+      });
     }
 
     this.setState({
@@ -592,6 +599,14 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
           )
       )
     );
+
+    const doc = this.containerNode?.ownerDocument;
+    if (doc) {
+      const queryElements = doc.querySelectorAll<HTMLDivElement>(".Highlight");
+      queryElements.forEach(element => {
+        element.style.pointerEvents = "all";
+      });
+    }
   };
 
   debouncedAfterSelection: () => void = debounce(this.afterSelection, 500);

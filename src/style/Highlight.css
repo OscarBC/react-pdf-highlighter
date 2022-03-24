@@ -17,13 +17,13 @@
 .Highlight__part {
   cursor: pointer;
   position: absolute;
-  background: rgba(255, 226, 143, 0.4);
+  background: rgba(255, 226, 143, 1);
   transition: background 0.3s;
   mix-blend-mode: multiply;
 }
 
 .Highlight__part:hover { 
-  background: rgba(0, 255, 0, 0.4);
+  background: rgba(255, 226, 143, 1);
 }
 
 .Highlight__popup {
@@ -38,5 +38,5 @@
 }
 
 .Highlight--scrolledTo .Highlight__part {
-  background: #ff414144;
+  background: #ff4141;
 }
