@@ -202,7 +202,7 @@ class App extends Component<{}, State> {
             position: "relative",
           }}
         >
-          <div className="zoomControls" style={{}}>
+          <div className="zoomControls" style={{ position: "absolute", backgroundColor: "white", zIndex: 10 }}>
             <button onClick={() => this.toggleSideBar()}>Sidebar</button>
             <button onClick={() => this.handleZoomOut()}>-- Zoom</button>
             <button onClick={() => this.handleZoomIn()}>++ Zoom</button>
