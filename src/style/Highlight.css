@@ -1,5 +1,6 @@
 .Highlight {
   position: absolute;
+  pointer-events: all;
 }
 
 .Highlight__emoji {
@@ -16,8 +17,13 @@
 .Highlight__part {
   cursor: pointer;
   position: absolute;
-  background: rgba(255, 226, 143, 1);
+  background: rgba(255, 226, 143, 0.4);
   transition: background 0.3s;
+  mix-blend-mode: multiply;
+}
+
+.Highlight__part:hover { 
+  background: rgba(0, 255, 0, 0.4);
 }
 
 .Highlight__popup {
@@ -32,5 +38,5 @@
 }
 
 .Highlight--scrolledTo .Highlight__part {
-  background: #ff4141;
+  background: #ff414144;
 }

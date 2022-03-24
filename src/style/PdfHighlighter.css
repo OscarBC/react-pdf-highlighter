@@ -9,6 +9,15 @@
   position: absolute;
   z-index: 3;
   left: 0;
+  top:0;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  pointer-events: none;
+  mix-blend-mode: multiply;
 }
 
 .PdfHighlighter__tip-container {

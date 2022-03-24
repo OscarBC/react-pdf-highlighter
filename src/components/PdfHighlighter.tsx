@@ -200,15 +200,17 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
 
   findOrCreateHighlightLayer(page: number) {
     const { textLayer } = this.viewer.getPageView(page - 1) || {};
-
     if (!textLayer) {
       return null;
     }
-
-    return findOrCreateContainerLayer(
-      textLayer.textLayerDiv,
-      "PdfHighlighter__highlight-layer"
-    );
+    if (textLayer.textLayerDiv.parentElement) {
+      let data = {
+        layer: findOrCreateContainerLayer(textLayer.textLayerDiv.parentElement, "PdfHighlighter__highlight-layer"),
+        textLayer: textLayer,
+      };
+      return data;
+    }
+    return null;
   }
 
   groupHighlightsByPage(highlights: Array<T_HT>): {
@@ -320,9 +322,9 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
     const highlightsByPage = this.groupHighlightsByPage(highlights);
 
     for (let pageNumber = 1; pageNumber <= pdfDocument.numPages; pageNumber++) {
-      const highlightLayer = this.findOrCreateHighlightLayer(pageNumber);
-
-      if (highlightLayer) {
+      const data = this.findOrCreateHighlightLayer(pageNumber);
+      if (data && data.layer) {
+        const { layer: highlightLayer } = data;
         ReactDom.render(
           <div>
             {(highlightsByPage[String(pageNumber)] || []).map(

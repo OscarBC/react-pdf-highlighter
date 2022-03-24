@@ -75,7 +75,7 @@ class App extends Component<{}, State> {
     });
   };
 
-  scrollViewerTo = (highlight: any) => {};
+  scrollViewerTo = (highlight: any) => { };
 
   scrollToHighlightFromHash = () => {
     const highlight = this.getHighlightById(parseIdFromHash());
@@ -122,14 +122,49 @@ class App extends Component<{}, State> {
         } = h;
         return id === highlightId
           ? {
-              id,
-              position: { ...originalPosition, ...position },
-              content: { ...originalContent, ...content },
-              ...rest,
-            }
+            id,
+            position: { ...originalPosition, ...position },
+            content: { ...originalContent, ...content },
+            ...rest,
+          }
           : h;
       }),
     });
+  }
+
+  static MIN_SCALE = 0.2;
+  static MAX_SCALE = 2;
+
+  handleZoomOut() {
+    if ((window as any).PdfViewer && (window as any).PdfViewer.viewer) {
+      let newScale = (window as any).PdfViewer.viewer.currentScale;
+      newScale = Math.round(newScale * 10) / 10;
+      newScale = (newScale - 0.10).toFixed(2);
+      console.log("this.MIN_SCALE", App.MIN_SCALE)
+      this.setCurrentScaleToViewer(Math.max(App.MIN_SCALE, newScale));
+    }
+  }
+
+  handleZoomIn() {
+    if ((window as any).PdfViewer && (window as any).PdfViewer.viewer) {
+      let newScale = (window as any).PdfViewer.viewer.currentScale;
+      newScale = Math.round(newScale * 10) / 10;
+      newScale = (newScale + 0.10).toFixed(2);
+      console.log("this.MIN_SCALE", App.MAX_SCALE)
+      this.setCurrentScaleToViewer(Math.min(App.MAX_SCALE, newScale));
+    }
+  }
+
+  setCurrentScaleToViewer(scale: number) {
+    if ((window as any).PdfViewer && (window as any).PdfViewer.viewer) {
+      if (scale > App.MAX_SCALE) {
+        scale = App.MAX_SCALE;
+      } else if (scale < App.MIN_SCALE) {
+        scale = App.MIN_SCALE;
+      }
+      (window as any).PdfViewer.viewer.currentScaleValue = scale;
+      (window as any).PdfViewer.renderHighlights();
+    }
   }
 
   render() {
@@ -149,6 +184,10 @@ class App extends Component<{}, State> {
             position: "relative",
           }}
         >
+          <div className="zoomControls">
+            <button onClick={() => this.handleZoomOut()}>-- Zoom</button>
+            <button onClick={() => this.handleZoomIn()}>++ Zoom</button>
+          </div>
           <PdfLoader url={url} beforeLoad={<Spinner />}>
             {(pdfDocument) => (
               <PdfHighlighter
